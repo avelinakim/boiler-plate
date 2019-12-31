@@ -4,8 +4,9 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const path = require('path')
 const session = require('express-session')
-const db = require('./database/index')
 require('dotenv').config()
+const passport = require('passport')
+const { db, User } = require('./database/models')
 
 // Config & create our database store
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
@@ -23,6 +24,27 @@ app.use(
     saveUninitialized: false,
   })
 )
+
+passport.serializeUser((user, done) => {
+  try {
+    done(null, user.id)
+  } catch (err) {
+    done(err)
+  }
+})
+
+passport.deserializeUser(async (id, done) => {
+  const user = await User.findByPk(id)
+  try {
+    done(null, user)
+  } catch (err) {
+    done(err)
+  }
+})
+
+// Passport (authentication) middleware
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Logging middleware
 app.use(morgan('dev'))
