@@ -1,11 +1,11 @@
-const { db, user } = require('./server/database/models')
+const { db, User } = require('./server/database/models')
 const { green, red } = require('chalk')
 
 const seed = async () => {
   await db.sync({ force: true })
 
   // seed your database here!
-  await user.create({ name: 'foo' })
+  await User.create({ name: 'foo' })
 
   console.log(green('Seeding success!'))
   db.close()
