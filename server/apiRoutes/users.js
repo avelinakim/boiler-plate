@@ -41,7 +41,11 @@ router.put('/login', async (req, res, next) => {
 // Get me (logged in user)
 router.get('/me', (req, res, next) => {
   try {
-    res.json(req.user)
+    if (req.user) {
+      res.json(req.user)
+    } else {
+      res.sendStatus(400)
+    }
   } catch (error) {
     next(error)
   }
@@ -61,7 +65,7 @@ router.delete('/logout', (req, res, next) => {
 // Other Routes
 // Matches GET requests to /api/users/
 router.get('/', function(req, res, next) {
-  /* etc */ res.send('USERS')
+  /* etc */ res.sendStatus(200)
 })
 // Matches POST requests to /api/users/
 router.post('/', function(req, res, next) {
